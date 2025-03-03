@@ -1,0 +1,286 @@
+\documentclass[a4paper]{article}
+\setlength{\topmargin}{-1.0in}
+\setlength{\oddsidemargin}{-0.2in}
+\setlength{\evensidemargin}{0in}
+\setlength{\textheight}{10.5in}
+\setlength{\textwidth}{6.5in}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{amssymb}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{mathpartir}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{csquotes}
+
+\hbadness=10000
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Assignment 1},
+    pdfpagemode=FullScreen,
+}
+\def\endproofmark{$\Box$}
+\newenvironment{proof}{\par{\bf Proof}:}{\endproofmark\smallskip}
+
+\begin{document}
+\begin{center}
+{\large \bf \color{red} Department of Computer Science} \\
+{\large \bf \color{red} Ashoka University} \\
+
+\vspace{0.1in}
+
+{\large \bf \color{blue} Introduction to Machine Learning}
+
+\vspace{0.05in}
+
+{ \bf \color{YellowOrange} Assignment 1}
+\end{center}
+\medskip
+
+{\textbf{Collaborators:} None} \hfill {\textbf{Name: Rushil Gupta} }
+
+\bigskip
+\hrule
+
+\section*{Question 1}
+\subsection*{Question 1.1}
+
+
+Since we want $\lambda$ to be the coefficient of $x$, we have:
+\[
+\eta = \log \lambda \implies \lambda = e^\eta \implies e^{\eta \cdot x} = e ^{\log \lambda ^ x} = \lambda^x
+\]
+
+\noindent So, we want the remaining $e^{-\lambda}$ term to be $e^{-e^\eta}$. So, we get:
+\[
+A(\eta) = e^\eta
+\]
+
+\noindent So, this gives us:
+\[
+p(x \mid \lambda) = b(x) \cdot e^{\eta \cdot x - A(\eta)} = b(x) \lambda ^ {x} e ^ {- \lambda}
+\]
+
+\noindent Clearly, setting $b(x) = \frac{1}{x!}$, we get the Poisson distribution in exponential family form. So, we have:
+
+\begin{align*}
+    \eta &= \log \lambda \\
+    A(\eta) &= e^\eta \\
+    b(x) &= \frac{1}{x!}
+\end{align*}
+
+\bigskip
+\subsection*{Question 1.2}
+
+It is known that:
+\[
+E[X] = A'(\eta) \quad \text{and} \quad \operatorname{Var}(X) = A''(\eta).
+\]
+
+\subsubsection*{Part (a)}
+We have $A(\eta) = e^\eta$. So, we get:
+\[
+A'(\eta) = e^\eta = \lambda
+\]
+
+\noindent Also, since we know $p(x)$ is a Poisson distribution, we know that $E[X] = \lambda$. Hence, correct.
+
+\subsubsection*{Part (b)}
+We have $A'(\eta) = e^\eta = \lambda$. So, we get:
+
+\[
+A''(\eta) = e^\eta = \lambda
+\]
+
+\noindent Again, since $p(x)$ is Poisson, we know that $\operatorname{Var}(X) = \lambda$. Hence, correct.
+
+
+\newpage
+\section*{Question 2}
+
+\subsection*{Question 2.a}
+We know that $Z = w^T X$. So, we have:
+\[
+E[Z] = E[w^T X] = E\left[\sum_{i=1}^N w_i X_i\right]
+\]
+
+\noindent By linearity of expectation, we get:
+\[
+E[Z] = \sum_{i=1}^N w_i E[X_i] = \sum_{i=1}^N w_i \mu_i = w^T \mu
+\]
+
+\noindent So, $E[Z] = w^T \mu$.
+
+\vspace{4mm}
+\subsection*{Question 2.b}
+Since we know $Z = w^T X$, we have:
+\[
+\operatorname{Var}(Z) = \operatorname{Var}(w^T X) = \operatorname{Var}{\left(\sum_{i=1}^N w_i X_i\right)}
+\]
+
+\noindent Since $X_i$ are not independent, but we know the covariance matrix of $X = \Sigma$, we get:
+\[
+\operatorname{Var}(Z) = \sum_{i=1}^N w_i^2 \operatorname{Var}(X_i) + 2 \sum_{i=1}^N \sum_{j=i+1}^N w_i w_j \operatorname{Cov}(X_i, X_j)
+\]
+
+\noindent Now, we know $Var(X_i) = \Sigma_{i, i}$ and $\operatorname{Cov}(X_i, X_j) = \Sigma_{i, j}$. So, we get:
+\[
+\operatorname{Var}(Z) = \sum_{i=1}^N w_i^2 \Sigma_{i, i} + 2 \sum_{i=1}^N \sum_{j=i+1}^N w_i w_j \Sigma_{i, j} = \sum_{i=1}^N \sum_{j=1}^N w_i \Sigma_{i, j} w_j = w^T \Sigma w
+\]
+
+\noindent So, $\operatorname{Var}(Z) = w^T \Sigma w$.
+
+\vspace{4mm}
+\subsection*{Question 2.c}
+We know that the correlation coefficient between $X_1$ and $X_2$ is given by:
+\[
+\rho_{X_1, X_2} = \frac{\operatorname{Cov}(X_1, X_2)}{\sigma_{X_1} \sigma_{X_2}}
+\]
+
+\noindent By the Cauchy-Schwarz inequality, we have:
+\[
+|\operatorname{Cov}(X_1, X_2)| \leq \sqrt{\operatorname{Var}(X_1) \operatorname{Var}(X_2)} = \sigma_{X_1} \sigma_{X_2}
+\]
+
+\noindent This gives:
+\[
+\frac{| \operatorname{Cov}(X_1, X_2) |}{\sigma_{X_1} \sigma_{X_2}} = |\rho_{X_1, X_2}| \leq 1 \implies -1 \leq \rho_{X_1, X_2} \leq 1
+\]
+
+\newpage
+\subsection*{Question 2.d}
+We want to evaluate:
+\[
+\int_{-\infty}^{\infty} x f(x) dx
+\]
+
+\noindent where:
+\[
+f(x) = \frac{1}{\sqrt{2\pi} \sigma} \exp\left(-\frac{(x - \mu)^2}{2\sigma^2}\right)
+\]
+
+\noindent We will use u-substitution to solve this integral. Let:
+\[
+u = \frac{x - \mu}{\sigma} \implies du = \frac{dx}{\sigma} \implies dx = \sigma du
+\]
+
+\noindent Now, after substitution, we get:
+\begin{align*}
+\int_{-\infty}^{\infty} (\sigma u + \mu) \frac{1}{\sqrt{2\pi} \sigma} \exp\left(-\frac{u^2}{2}\right) \sigma du &= \int_{-\infty}^{\infty} (\sigma u + \mu) \frac{1}{\sqrt{2\pi}} \exp\left(-\frac{u^2}{2}\right) du \\
+&= \frac{\sigma}{\sqrt{2\pi}} \int_{-\infty}^{\infty} u \exp\left(-\frac{u^2}{2}\right) du + \frac{\mu}{\sqrt{2\pi}} \int_{-\infty}^{\infty} \exp\left(-\frac{u^2}{2}\right) du
+\end{align*}
+
+
+\noindent We know that:
+\[
+\int_{-\infty}^{\infty} \exp\left(-\frac{u^2}{2}\right) du = \sqrt{2\pi}
+\]
+
+\noindent So, out final integral looks like:
+\[
+\frac{\sigma}{\sqrt{2\pi}} \int_{-\infty}^{\infty} u \exp\left(-\frac{u^2}{2}\right) du + \mu
+\]
+
+\noindent Now, look at the other integral:
+\[
+\int u \exp\left(-\frac{u^2}{2}\right) du
+\]
+
+\noindent Since $\exp\left(-\frac{u^2}{2}\right)$ is an even function, $u$ is an odd function, and we have symmetric bounds, we get:
+\[
+\int_{-\infty}^{\infty} u \exp\left(-\frac{u^2}{2}\right) du = 0
+\]
+
+\noindent So, our final answer is:
+\[
+\int_{-\infty}^{\infty} x f(x) dx = \mu
+\]
+
+\newpage
+\section*{Question 3}
+\subsection*{Question 3.a}
+
+First, let's look at what a prediction $\hat{y}$ is. We have:
+\[
+\hat{y}^{(i)} = \Theta^T x^{(i)}
+\]
+
+\noindent So, we can then construction a matrix $X$ with columns as $x^{(i)}$ and a matrix $Y$ with columns as $y^{(i)}$. Observe that $X \in \mathbb{R}^{n \times m}$ and $Y \in \mathbb{R}^{p \times m}$. So, we can predictions $\hat{Y}$ as:
+\[
+\hat{Y} = \Theta^T X
+\]
+
+\noindent Now, we know our earlier definition of the cost function was the sum of all squared errors component-wise in each vectors, for all data points. That is equivalent to taking the square of the differences of $\hat{Y} = \Theta^T X$ and $Y$ and summing them up. So, we have:
+\[
+J(\Theta) = \frac{1}{2} \sum_{i=1}^m \sum_{j=1}^p \left((\Theta^T X)_{ij} - Y_{ij}\right)^2
+\]
+
+\noindent Now, if we say $A = \Theta^T X - Y$, we know that the cost function is the Frobenius norm of $A$ squared. So, we can write:
+\[
+J(\Theta) = \frac{1}{2} \|A\|_F^2 = \frac{1}{2}\| \Theta^T X - Y \|_F^2
+\]
+
+\noindent Lastly, since we know $\|A\|_F^2 = \operatorname{tr}(A^T A)$, we can write:
+\[
+J(\Theta) = \frac{1}{2} \operatorname{tr}\left((\Theta^T X - Y)^T (\Theta^T X - Y)\right)
+\]
+
+\vspace{2mm}
+\subsection*{Question 3.b}
+Expand the term inside the trace:
+\[
+\begin{aligned}
+(X\Theta - Y)^T (X\Theta - Y) &= \Theta^T X^T X \Theta - \Theta^T X^T Y - Y^T X\Theta + Y^T Y
+\end{aligned}
+\]
+Thus, the cost function becomes:
+\[
+J(\Theta) = \frac{1}{2}\operatorname{tr}\left(\Theta^T X^T X \Theta\right) - \operatorname{tr}\left(Y^T X \Theta\right) + \frac{1}{2}\operatorname{tr}\left(Y^T Y\right)
+\]
+
+\noindent Since the last term, \(\operatorname{tr}(Y^T Y)\), does not depend on \(\Theta\), it can be ignored when finding the minimizer. To find the minimum, we differentiate \(J(\Theta)\) with respect to \(\Theta\):
+
+\begin{align*}
+    \nabla_\Theta \left(\frac{1}{2}\operatorname{tr}\left(\Theta^T X^T X \Theta\right)\right) &= \frac{1}{2}\operatorname{tr}\left(\nabla_\Theta \left(\Theta^TX^T X \Theta\right)\right) \\
+    &= X^T X \Theta \\
+    \nabla_\Theta \left(\operatorname{tr}\left(Y^T X \Theta\right)\right) &= Y^T X
+\end{align*}
+
+\noindent This gives us:
+\[
+\nabla_\Theta J(\Theta) = X^T X \Theta - X^T Y
+\]
+
+\noindent We know at the minimum, the gradient is zero. So, we get:
+\begin{align*}
+    X^T X \Theta &= X^T Y \\
+    \Theta &= \left(X^T X\right)^{-1} \left(X^T Y\right)
+\end{align*}
+
+
+\newpage
+\subsection*{Question 3.c}
+Consider the case where we solve for each output dimension separately. We would consider \(p\) independent linear models:
+\[
+y_j^{(i)} = \theta_j^T x^{(i)}, \quad j = 1,\ldots,p,
+\]
+
+\vspace{2mm}
+\noindent Here, with little inspection, we see that $\Theta_j \in \mathbb{R}^n$ is the parameter vector for the $j$-th output dimension. The closed-form solution for each $\theta_j$ is given by:
+\[
+\theta_j = (X^T X)^{-1} X^T y_j
+\]
+
+\noindent where $y_j$ is the vector of the $j$-th output values over all samples. So now, our final predictor will be $p$ such predictors, and we can collect them into a matrix $\Theta \in \mathbb{R}^{n \times p}$:
+\[
+\Theta = \begin{bmatrix} \theta_1 \\ \theta_2 \\ \vdots \\ \theta_p \end{bmatrix} = \theta_{:, j}
+\]
+
+\noindent This is identical to the multivariate solution we saw earlier.
+
+\end{document}
