@@ -1,0 +1,333 @@
+\documentclass[a4paper]{article}
+\setlength{\topmargin}{-1.0in}
+\setlength{\oddsidemargin}{-0.2in}
+\setlength{\evensidemargin}{0in}
+\setlength{\textheight}{10.5in}
+\setlength{\textwidth}{6.5in}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{amssymb}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{mathpartir}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{csquotes}
+
+\hbadness=10000
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Assignment 2A},
+    pdfpagemode=FullScreen,
+}
+\def\endproofmark{$\Box$}
+\newenvironment{proof}{\par{\bf Proof}:}{\endproofmark\smallskip}
+
+\begin{document}
+\begin{center}
+{\large \bf \color{red} Department of Computer Science} \\
+{\large \bf \color{red} Ashoka University} \\
+
+\vspace{0.1in}
+
+{\large \bf \color{blue} Introduction to Machine Learning}
+
+\vspace{0.05in}
+
+{ \bf \color{YellowOrange} Assignment 2A}
+\end{center}
+\medskip
+
+{\textbf{Collaborators:} None} \hfill {\textbf{Name: Rushil Gupta} }
+
+\bigskip
+\hrule
+
+\section*{Question 1}
+We compute
+  \[
+    \varphi(x)\cdot \varphi(x')
+     = \sum_{i=0}^\infty \frac{1}{\sqrt{i!}}e^{-x^2/2}x^i \frac{1}{\sqrt{i!}}e^{-x'^2/2}x'^i
+     = e^{-(x^2+x'^2)/2}\sum_{i=0}^\infty \frac{(xx')^i}{i!}
+     = e^{-(x^2+x'^2)/2}e^{xx'}
+     = e^{-\frac{(x-x')^2}{2}}
+  \]
+  Hence
+  \(\varphi(x)\cdot \varphi(x')=K(x,x')\), so since \(K\) can be written be as a dot product in some feature space, it is a valid kernel.
+
+
+\newpage
+\section*{Question 2}
+\subsection*{Question 2.1}
+The hard-margin SVM finds, among all separating hyperplanes, the one that maximizes the margin between the two classes.  More precisely, it solves the convex quadratic program
+\[
+\min_{w,b} \|w\|^2
+\quad\text{s.t.}\quad
+y_i\bigl(w^\top x_i + b\bigr) \ge 1
+\quad\forall i,
+\]
+which is equivalent to maximizing the geometric margin \(2/\|w\|\).  In contrast, the Perceptron algorithm merely finds \emph{a} separating hyperplane by enforcing
+\[
+y_i\bigl(w^\top x_i + b\bigr) > 0
+\quad\forall i,
+\]
+but does not attempt to maximize the margin.  Consequently:
+
+\begin{itemize}[itemsep=1ex]
+  \item \textbf{Generalization.}  A larger margin yields tighter bounds on the generalization error, whereas the Perceptron solution may have arbitrarily small margin and thus poorer guarantees on unseen data.
+  \item \textbf{Uniqueness and Stability.}  The SVM optimization is strictly convex, so it yields a unique \((w,b)\) regardless of initialization.  The Perceptron can converge to many different solutions depending on the order of updates and the starting point.
+  \item \textbf{Robustness.}  By maximizing the margin, SVMs are more robust to noise in the training set near the decision boundary than Perceptron-found hyperplanes.
+\end{itemize}
+
+\subsection*{Question 2.3}
+\textbf{i) Feasibility of A's optimum for B.}\\
+
+\noindent Let \((w_A,b_A)\) be an optimal solution to (A). Then:
+
+\[
+    y_i\left(w_A^\top x_i + b_A\right) \ge 1
+    \quad\forall i.
+\]
+
+\noindent Then, for any \(i\):
+\begin{align*}
+    y_i\left(w_A^\top x_i + b_A\right) \ge 1 \ge 0 \implies y_i\left(w_A^\top x_i + b_A\right) \ge 0 \\
+\end{align*}
+
+\noindent Also, since all $y_i\left(w_A^\top x_i + b_A\right) \ge 1$ and $y_i \in \{-1, 1\}$, we know:
+
+\begin{align*}
+    \min_i  y_i\left(w_A^\top x_i + b_A\right) \ge 1 \\
+    \implies \min_i |y_i\left(w_A^\top x_i + b_A\right)| \ge 1 \\
+    \implies \min_i |w_A^\top x_i + b_A| \ge 1 \\
+\end{align*}
+
+\noindent Lastly, since we know that for the support vectors, the margin is equal to 1, we get:
+\[ \min_i |w_A^\top x_i + b_A| = 1 \]
+
+\noindent Thus, we can conclude that the optimum of (A) is feasible for (B).\\
+
+
+\vspace{2ex}
+\noindent\textbf{ii) Feasibility of B's optimum for A.}\\
+
+\noindent Let \((w_B,b_B)\) be an optimal solution to (B). Then:
+\begin{align*}
+    y_i\left(w_B^\top x_i + b_B\right) \ge 0 \quad\forall i \\
+    \min_i  |w_B^\top x_i + b_B| = 1
+\end{align*}
+
+\noindent Then, for any \(i\):
+\begin{align*}
+    \min_i  |w_B^\top x_i + b_B| = 1 \implies |w_B^\top x_i + b_B| \ge 1 \quad\forall i
+\end{align*}
+
+\noindent Since \(y_i \in \{-1, 1\}\), and $y_i\left(w_B^\top x_i + b_B\right) \ge 0$, we can conclude that:
+\begin{align*}
+    y_i\left(w_B^\top x_i + b_B\right) \ge 1 \quad\forall i
+\end{align*}
+\noindent Thus, we can conclude that the optimum of (B) is feasible for (A).\\
+
+\vspace{2ex}
+\noindent\textbf{iii) Optimality of A's optimum for B.}\\
+
+\noindent Let $(w_A,b_A)$ be an optimal solution to (A). Then since \((w_A,b_A)\) is feasible for (B),
+\[
+    \min_{(w,b)\in\mathrm{B}}\|w\|^2
+     \le \|w_A\|^2
+     = 
+    \min_{(w,b)\in\mathrm{A}}\|w\|^2.
+\]
+Similarly, \((w_B,b_B)\) is feasible for (A), so
+\[
+    \min_{(w,b)\in\mathrm{A}}\|w\|^2
+     \le \|w_B\|^2
+     = 
+    \min_{(w,b)\in\mathrm{B}}\|w\|^2.
+\]
+Combining these shows the two minima coincide and that any optimal solution to one formulation is optimal for the other, i.e.:
+
+\[
+    \min_{(w,b)\in\mathrm{A}}\|w\|^2
+     = 
+    \min_{(w,b)\in\mathrm{B}}\|w\|^2.
+\]
+
+
+\newpage 
+\section*{Question 3}
+\subsection*{Question 3.1}
+\noindent The hard-margin SVM does not converge for data that is not linearly separable. This is because the hard-margin SVM tries to find a hyperplane that separates the two classes with maximum margin. If the data is not linearly separable, there will be no hyperplane that can separate the two classes, and thus the optimization problem will not have a solution. In the figure given, there is no hyperplane that can separate the two classes, so the hard-margin SVM will not converge.
+
+
+\vspace{2ex}
+\subsection*{Question 3.2}
+\noindent As \(C \to \infty\), the soft-margin SVM becomes more similar to the hard-margin SVM. This is because a larger value of \(C\) means that we are penalizing misclassifications more heavily, which forces the SVM to find a hyperplane that separates the two classes with maximum margin, similar to the hard-margin SVM.\\
+
+\noindent On the other hand, as \(C \to 0^+\), the soft-margin SVM becomes less similar to the hard-margin SVM. In fact, since the weight given to epsilon is very small, the SVM will not care about misclassifications at all. So, it will not give any valuable solution to the data.\\
+
+
+\vspace{2ex}
+\subsection*{Question 3.3}
+% Suppose the data is linearly separable and you found a solution (w, b) to the hard-margin SVM. The operating hyperplane is surrounded by a margin defined by hyperplanes:
+% {x : wT x + b = 1} and {x : wT x + b = −1}.
+% Prove that at least one training data point lies on each of these margin hyperplanes.
+\noindent Let \((w,b)\) be a solution to the hard-margin SVM. Then, by formulation 2, we have:
+\begin{align*}
+    y_i\left(w^\top x_i + b\right) \ge 0 \quad\forall i \\
+    \min_i |w^\top x_i + b| = 1    
+\end{align*}
+
+\noindent The condition 2 implies that there exists at least one \(i\) such that:
+\begin{align*}
+    |w^\top x_i + b| &= 1 \\
+    \implies w^\top x_i + b = 1 \quad&\text{or}\quad w^\top x_i + b = -1
+\end{align*}
+
+\noindent So, we can conclude that at least one training data point lies on each of these margin hyperplanes.\\
+
+
+\newpage
+\section*{Question 4}
+\subsection*{Question 4.1}
+Consider the l$_2$-soft-margin problem
+\[
+\min_{w,b,\xi} \frac12\|w\|^2+\frac{C}{2}\sum_{i=1}^n\xi_i^2
+\quad\text{s.t.}\quad
+y_i\bigl(w^T x_i + b\bigr)\ge 1-\xi_i,\quad i=1,\dots,n,
+\]
+with or without the additional constraints \(\xi_i\ge0\).  Suppose \((w^*,b^*,\xi^*)\) is optimal for the version without \(\xi_i\ge0\).  If for some \(i\), \(\xi^*_i<0\), then
+\[
+y_i\bigl(w^{*T}x_i + b^*\bigr) \ge 1-\xi^*_i > 1,
+\]
+so replacing \(\xi^*_i\) by \(\tilde\xi_i=\max\{\xi^*_i,0\}=0\) preserves feasibility and decreases the objective (since \(\xi^{*2}_i>0\) but \(\tilde\xi_i^2=0\)).  Hence at optimum \(\xi^*_i\ge0\) for all such \(i\), and the two formulations have the same optimal value.
+
+
+\vspace{2ex}
+\subsection*{Question 4.2}
+Introduce multipliers \(\alpha_i\ge0\) for the constraints \(y_i(w^T x_i+b)\ge1-\xi_i\).  The Lagrangian is
+\[
+L(w,b,\xi,\alpha)
+=\frac12\,w^T w+\frac{C}{2}\,\xi^T\xi
+-\sum_{i=1}^n\alpha_i\bigl(y_i(w^T x_i+b)-1+\xi_i\bigr),
+\]
+where \(\xi=(\xi_1,\dots,\xi_n)^T\).
+
+
+\vspace{2ex}
+\subsection*{Question 4.3}
+Setting derivatives to zero gives
+\[
+\nabla_w L:\quad
+w-\sum_{i=1}^n\alpha_i\,y_i\,x_i=0
+\quad\Longrightarrow\quad
+w=\sum_{i=1}^n\alpha_i\,y_i\,x_i,
+\]
+\[
+\frac{\partial L}{\partial b}:\quad
+-\sum_{i=1}^n\alpha_i\,y_i=0,
+\]
+\[
+\nabla_{\xi}L:\quad
+C\,\xi-\alpha=0
+\quad\Longrightarrow\quad
+\xi=\frac{1}{C}\,\alpha,
+\]
+where \(\alpha=(\alpha_1,\dots,\alpha_n)^T\).
+
+
+\newpage
+\section*{Question 5}
+\subsection*{Question 5.1}
+Let \(X \in \mathbb{R}^{n\times d}\) be the matrix whose \(i\)-th row is \(x_i^T\), and let \(y \in \mathbb{R}^{n}\) be the label vector.\\
+
+\noindent The regression objective is
+\[
+J(\theta)=\sum_{i=1}^{n}\bigl(y_i-\theta^{\top}x_i\bigr)^{2}+\frac{\lambda}{2}\,\theta^{\top}\theta .
+\]
+
+\noindent Taking the gradient with respect to \(\theta\) and setting it to zero gives:
+
+\begin{align*}
+    \nabla_{\theta}J(\theta) &= -2\sum_{i=1}^{n}\bigl(y_i-\theta^{\top}x_i\bigr)x_i+\lambda\theta \\
+    &= -2X^{\top}(y-X\theta)+\lambda\theta \\
+    &= 0
+\end{align*}
+
+\noindent Rearranging gives:
+\begin{align*}
+    \lambda\theta &= 2X^{\top}(y-X\theta) \\
+    \implies \lambda\theta + 2X^{\top}X\theta &= 2X^{\top}y \\
+    \implies (\lambda I_{d}+2X^{\top}X)\theta &= 2X^{\top}y
+\end{align*}
+
+\noindent Assuming \(X^{\top}X+ \frac{1}{2}\lambda I_{d}\) is invertible, the unique minimiser is
+\[
+\hat{\theta} = \left( X^{\top}X+\frac{1}{2}\lambda I_{d} \right)^{-1} X^{\top} y
+\]
+
+
+\vspace{2ex}
+\subsection*{Question 5.2}
+
+\noindent
+Let \(\phi(x)\) be any feature map and define  
+\[
+\Phi = 
+\begin{bmatrix}
+\phi(x_1)^{\!\top} \\[-2pt]
+\vdots            \\[-2pt]
+\phi(x_n)^{\!\top}
+\end{bmatrix}
+\in\mathbb{R}^{n\times D}, 
+\qquad 
+K = \Phi\Phi^{\!\top}\in\mathbb{R}^{n\times n}, 
+\quad 
+K_{ij}=k(x_i,x_j)=\phi(x_i)^{\!\top}\phi(x_j).
+\]
+
+\noindent The ridge objective in feature space is  
+\[
+J(\theta)=\lVert y-\Phi\theta\rVert^{2}+\frac{\lambda}{2}\,\theta^{\top}\theta.
+\]
+
+\noindent Using the identity \((\lambda I+BA)^{-1}B=B(\lambda I+AB)^{-1}\) with  
+\(A=\Phi^{\!\top}, B=\Phi\) gives  
+\[
+\theta^{\star}
+= \bigl(\Phi^{\!\top}\Phi+\tfrac{\lambda}{2}I_D\bigr)^{-1}\Phi^{\!\top}y
+= \Phi^{\!\top}\Bigl(K+\tfrac{\lambda}{2}I_n\Bigr)^{-1}y.
+\]
+
+\noindent Therefore \(\theta^{\star}\) lies in the span of the training data:  
+\[
+\theta^{\star}=\sum_{i=1}^{n}\alpha_i\,\phi(x_i)
+\quad\text{where}\quad
+\alpha=\Bigl(K+\tfrac{\lambda}{2}I_n\Bigr)^{-1}y.
+\]
+
+\noindent For a new point \(x_{\text{new}}\) define  
+\[
+k_{\text{new}}=
+\begin{bmatrix}
+k(x_1,x_{\text{new}})\\[-2pt]
+\vdots\\[-2pt]
+k(x_n,x_{\text{new}})
+\end{bmatrix}
+\in\mathbb{R}^{n}.
+\]
+
+\noindent The prediction uses only kernel evaluations:  
+\[
+\hat{y}_{\text{new}}
+= \theta^{\star\!\top}\phi(x_{\text{new}})
+= k_{\text{new}}^{\!\top}\alpha
+= k_{\text{new}}^{\!\top}\Bigl(K+\tfrac{\lambda}{2}I_n\Bigr)^{-1}y.
+\]
+
+\noindent This closed-form expression avoids ever computing \(\phi(x)\) explicitly.
+\end{document}
